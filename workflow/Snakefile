@@ -1,0 +1,19 @@
+import os
+import re
+
+files = os.listdir('GSE156728')
+
+ind_names = {re.sub('\\.', '_', re.sub('.counts.*', '', x)): x for x in filter(lambda x: re.findall('CD[4|8]', x), files)}
+
+ind_by_cd_names = {'GSE156728_CD4': [f'GSE156728/{x}' for x in filter(lambda x: re.findall('CD4', x), files)],
+                   'GSE156728_CD8': [f'GSE156728/{x}' for x in filter(lambda x: re.findall('CD8', x), files)]}
+
+wildcard_constraints:
+    cond= '|'.join([re.escape(x) for x in ind_names.keys()]),
+    cd_type= '|'.join([re.escape(x) for x in ind_by_cd_names.keys()])
+
+include: "rules/analysis.smk"
+
+rule all:
+    input: expand("out/{cd_type}/{cd_type}/data.h5", cd_type = ind_by_cd_names.keys()),
+           expand("out/{cond}/{cond}/data.h5", cond = ind_names.keys())

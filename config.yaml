@@ -1,0 +1,2 @@
+rscript: '/scratch/opt/R/4.0.5/bin/Rscript'
+annot: 'GSE156728/GSE156728_metadata.txt.gz'
